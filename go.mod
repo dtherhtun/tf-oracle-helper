@@ -1,4 +1,4 @@
-module github.com/dbgeek/terraform-oracle-rdbms-helper
+module github.com/dtherhtun/tf-oracle-helper
 
 require (
 	github.com/hashicorp/go-version v1.2.1
