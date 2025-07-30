@@ -7,7 +7,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 )
 
+
+
 func TestAuditRead(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -25,6 +30,9 @@ func TestAuditRead(t *testing.T) {
 }
 
 func TestAuditSetAudit(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -105,6 +113,9 @@ func TestAuditSetAudit(t *testing.T) {
 }
 
 func TestAuditRemoveAudit(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -151,8 +162,7 @@ func TestAuditRemoveAudit(t *testing.T) {
 				},
 			},
 			[]AuditOption{AuditOption{
-				Option:  "ALTER SYSTEM",
-				Success: "BY ACCESS",
+				Option:  "ALTER SYSTEM",				Success: "BY ACCESS",
 				Failure: "BY ACCESS"},
 			},
 			[]AuditOption{AuditOption{

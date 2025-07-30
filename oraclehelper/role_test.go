@@ -1,11 +1,13 @@
 package oraclehelper
 
 import (
-	"log"
 	"testing"
 )
 
 func TestRoleService(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -17,7 +19,7 @@ func TestRoleService(t *testing.T) {
 
 	role, err := c.RoleService.ReadRole(dbRole)
 	if err != nil {
-		log.Fatalf("failed to read role, errormsg: %v\n", err)
+		t.Fatalf("failed to read role, errormsg: %v\n", err)
 	}
 
 	if "TESTROLE" != role.Role {

@@ -5,6 +5,9 @@ import (
 )
 
 func TestSchedulerWindowService(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -23,7 +26,7 @@ func TestSchedulerWindowService(t *testing.T) {
 		t.Error("Failed to read window")
 	}
 	if windows.WindowName != tstWindow.WindowName {
-		t.Error("window name not equal")
+				t.Error("window name not equal")
 
 	}
 	c.SchedulerWindowService.ModifySchedulerWindow(

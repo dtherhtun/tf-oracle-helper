@@ -2,6 +2,7 @@ package oraclehelper
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"strconv"
 
@@ -38,6 +39,10 @@ type (
 	}
 )
 
+func (c *Client) Close() error {
+	return c.DBClient.Close()
+}
+
 const (
 	queryDbVersion = `
 SELECT
@@ -57,36 +62,40 @@ FROM   dual
 )
 
 func NewClient(cfg Cfg) (*Client, error) {
-	port, _ := strconv.Atoi(cfg.DbPort)
+	port, err := strconv.Atoi(cfg.DbPort)
+	if err != nil {
+		return nil, fmt.Errorf("invalid DbPort: %w", err)
+	}
 	urlOptions := make(map[string]string)
 	if cfg.SysDBA {
 		urlOptions["auth as"] = "sysdba"
 	}
 	connStr := go_ora.BuildUrl(cfg.DbHost, port, cfg.DbService, cfg.Username, cfg.Password, urlOptions)
 	db, err := sql.Open("oracle", connStr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open database connection: %w", err)
+	}
+
 	var dBVersion string
 	var conName string
 	var conID uint
 
 	err = db.Ping()
 	if err != nil {
-		log.Printf("[DEBUG] ping failed")
-		return nil, err
+		log.Printf("[DEBUG] ping failed: %v", err)
+		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 	err = db.QueryRow(queryDbVersion).Scan(&dBVersion)
 	if err != nil {
-		log.Fatalf("Query db version failed and return error: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to query database version: %w", err)
 	}
 	err = db.QueryRow(queryConName).Scan(&conName)
 	if err != nil {
-		log.Fatalf("Query con name failed and return error: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to query container name: %w", err)
 	}
 	err = db.QueryRow(queryConID).Scan(&conID)
 	if err != nil {
-		log.Fatalf("Query con id failed and return error: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to query container ID: %w", err)
 	}
 
 	c := &Client{DBClient: db}
@@ -101,13 +110,14 @@ func NewClient(cfg Cfg) (*Client, error) {
 	c.AutoTaskService = &autoTaskService{client: c}
 	c.DatabaseService = &databaseService{client: c}
 	c.AuditUserService = &auditUserService{client: c}
-	c.DBVersion, _ = version.NewVersion(dBVersion)
-	c.ConName = conName
-	if conID >= 1 {
-		c.DBPluggable = true
-	} else {
-		c.DBPluggable = false
+
+	dbVersionParsed, err := version.NewVersion(dBVersion)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse database version '%s': %w", dBVersion, err)
 	}
+	c.DBVersion = dbVersionParsed
+	c.ConName = conName
+	c.DBPluggable = conID >= 1
 	log.Printf("[DEBUG] dbversion: %v", c.DBVersion)
 
 	return c, nil

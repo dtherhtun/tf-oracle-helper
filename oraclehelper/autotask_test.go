@@ -1,7 +1,6 @@
 package oraclehelper
 
 import (
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -12,11 +11,14 @@ var (
 )
 
 func TestAutoTaskRead(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	resourceAutoTask := ResourceAutoTask{ClientName: autoTasks[acctest.RandIntRange(0, 2)]}
 
 	autoTask, err := c.AutoTaskService.ReadAutoTask(resourceAutoTask)
 	if err != nil {
-		log.Fatalf("failed to read autotask, errormsg: %v\n", err)
+		t.Fatalf("failed to read autotask, errormsg: %v\n", err)
 	}
 
 	if autoTask.ClientName != resourceAutoTask.ClientName {
@@ -25,18 +27,20 @@ func TestAutoTaskRead(t *testing.T) {
 }
 
 func TestAutoTaskEnableDisable(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
 
 	resourceAutoTask := ResourceAutoTask{ClientName: autoTasks[acctest.RandIntRange(0, 2)]}
 
 	autoTask, err := c.AutoTaskService.ReadAutoTask(resourceAutoTask)
 	if err != nil {
-		log.Fatalf("failed to read autotask, errormsg: %v\n", err)
+		t.Fatalf("failed to read autotask, errormsg: %v\n", err)
 	}
 
 	if autoTask.Status == "ENABLED" {
 		err = c.AutoTaskService.DisableAutoTask(resourceAutoTask)
 		if err != nil {
-			log.Fatalf("failed to Disable autotask, errormsg: %v\n", err)
+			t.Fatalf("failed to Disable autotask, errormsg: %v\n", err)
 		}
 		autoTask, _ = c.AutoTaskService.ReadAutoTask(resourceAutoTask)
 		if autoTask.Status != "DISABLED" {
@@ -45,7 +49,7 @@ func TestAutoTaskEnableDisable(t *testing.T) {
 	} else {
 		err = c.AutoTaskService.EnableAutoTask(resourceAutoTask)
 		if err != nil {
-			log.Fatalf("failed to Enable autotask, errormsg: %v\n", err)
+			t.Fatalf("failed to Enable autotask, errormsg: %v\n", err)
 		}
 		autoTask, _ = c.AutoTaskService.ReadAutoTask(resourceAutoTask)
 		if autoTask.Status != "ENABLED" {

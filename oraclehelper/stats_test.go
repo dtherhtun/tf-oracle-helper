@@ -2,7 +2,6 @@ package oraclehelper
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -13,6 +12,9 @@ var (
 )
 
 func TestStatsServiceTable(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	tableName := acctest.RandStringFromCharSet(10, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	c.DBClient.Exec(fmt.Sprintf("drop table system.%s", tableName))
 	c.DBClient.Exec(fmt.Sprintf("create table system.%s(col number)", tableName))
@@ -37,12 +39,12 @@ func TestStatsServiceTable(t *testing.T) {
 	err := c.StatsService.SetTabPre(resourceStats)
 
 	if err != nil {
-		log.Fatalf("failed to stats, errormsg: %v\n", err)
+		t.Fatalf("failed to stats, errormsg: %v\n", err)
 	}
 
 	tableGranularity, err := c.StatsService.ReadTabPref(resourceStats)
 	if err != nil {
-		log.Fatalf("failed to stats, errormsg: %v\n", err)
+		t.Fatalf("failed to stats, errormsg: %v\n", err)
 	}
 
 	if resourceStats.Pvalu != tableGranularity.Pvalu {
@@ -52,6 +54,8 @@ func TestStatsServiceTable(t *testing.T) {
 }
 
 func TestStatsServiceGlobal(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
 
 	v := granularity[acctest.RandIntRange(0, 6)]
 
@@ -61,12 +65,12 @@ func TestStatsServiceGlobal(t *testing.T) {
 	}
 	err := c.StatsService.SetGlobalPre(resourceStats)
 	if err != nil {
-		log.Fatalf("failed to stats, errormsg: %v\n", err)
+		t.Fatalf("failed to stats, errormsg: %v\n", err)
 	}
 
 	globalGranularity, err := c.StatsService.ReadGlobalPre(resourceStats)
 	if err != nil {
-		log.Fatalf("failed to stats, errormsg: %v\n", err)
+		t.Fatalf("failed to stats, errormsg: %v\n", err)
 	}
 
 	if resourceStats.Pvalu != globalGranularity.Pvalu {

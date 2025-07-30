@@ -2,11 +2,13 @@ package oraclehelper
 
 import (
 	"fmt"
-	"log"
 	"testing"
 )
 
 func TestGrantServiceObjectGrants(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -29,7 +31,7 @@ func TestGrantServiceObjectGrants(t *testing.T) {
 	c.GrantService.GrantObjectPrivilege(objGrant)
 	grants, err := c.GrantService.ReadGrantObjectPrivilege(objGrant)
 	if err != nil {
-		log.Fatalf("failed to read role, errormsg: %v\n", err)
+		t.Fatalf("failed to read role, errormsg: %v\n", err)
 	}
 
 	if grants.Privileges[0] != "SELECT" {
@@ -38,7 +40,7 @@ func TestGrantServiceObjectGrants(t *testing.T) {
 	c.GrantService.RevokeObjectPrivilege(objGrant)
 	grants, err = c.GrantService.ReadGrantObjectPrivilege(objGrant)
 	if err != nil {
-		log.Fatalf("failed to read role, errormsg: %v\n", err)
+		t.Fatalf("failed to read role, errormsg: %v\n", err)
 	}
 	if len(grants.Privileges) != 0 {
 		t.Errorf("Wanted: %d gott: %d", 0, len(grants.Privileges))
@@ -48,7 +50,7 @@ func TestGrantServiceObjectGrants(t *testing.T) {
 	c.GrantService.GrantObjectPrivilege(objGrant2)
 	grants, err = c.GrantService.ReadGrantObjectPrivilege(objGrant2)
 	if err != nil {
-		log.Fatalf("failed to read role, errormsg: %v\n", err)
+		t.Fatalf("failed to read role, errormsg: %v\n", err)
 	}
 
 	if len(grants.Privileges) != 2 {
@@ -59,7 +61,7 @@ func TestGrantServiceObjectGrants(t *testing.T) {
 	c.GrantService.RevokeObjectPrivilege(objGrant)
 	grants, err = c.GrantService.ReadGrantObjectPrivilege(objGrant)
 	if err != nil {
-		log.Fatalf("failed to read role, errormsg: %v\n", err)
+		t.Fatalf("failed to read role, errormsg: %v\n", err)
 	}
 	if len(grants.Privileges) != 1 {
 		t.Errorf("Wanted: %d gott: %d", 1, len(grants.Privileges))
@@ -69,6 +71,9 @@ func TestGrantServiceObjectGrants(t *testing.T) {
 }
 
 func TestGrantServiceSysPrivsGrants(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -97,6 +102,9 @@ func TestGrantServiceSysPrivsGrants(t *testing.T) {
 }
 
 func TestGrantServiceRolePrivs(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -131,6 +139,9 @@ func TestGrantServiceRolePrivs(t *testing.T) {
 }
 
 func TestGrantServiceWholeSchemaToUser(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -162,6 +173,9 @@ func TestGrantServiceWholeSchemaToUser(t *testing.T) {
 
 }
 func TestGrantServiceGetHashSchemaPrivsToUser(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -204,6 +218,9 @@ func TestGrantServiceGetHashSchemaPrivsToUser(t *testing.T) {
 }
 
 func TestGrantServiceCheckGrantSchemaDiffLogic(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return
@@ -255,6 +272,9 @@ func TestGrantServiceCheckGrantSchemaDiffLogic(t *testing.T) {
 }
 
 func TestGrantServiceCRevokeSchemaFromUser(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	// This test can not be run against an container db
 	if c.ConName == "CDB$ROOT" {
 		return

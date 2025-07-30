@@ -1,15 +1,16 @@
 package oraclehelper
 
 import (
-	"log"
 	"testing"
 )
 
 func TestDatabaseRead(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
 
 	db, err := c.DatabaseService.ReadDatabase()
 	if err != nil {
-		log.Fatalf("failed to read database, errormsg: %v\n", err)
+		t.Fatalf("failed to read database, errormsg: %v\n", err)
 	}
 
 	if db.Name == "" {
@@ -18,6 +19,9 @@ func TestDatabaseRead(t *testing.T) {
 }
 
 func TestDatabaseModify(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	var logMode string
 	c.DBClient.QueryRow("SELECT log_mode FROM v$database").Scan(&logMode)
 	if logMode == "NOARCHIVELOG" {
@@ -25,7 +29,7 @@ func TestDatabaseModify(t *testing.T) {
 	}
 	db, err := c.DatabaseService.ReadDatabase()
 	if err != nil {
-		log.Fatalf("failed to read database, errormsg: %v\n", err)
+		t.Fatalf("failed to read database, errormsg: %v\n", err)
 	}
 
 	if db.ForceLogging == "NO" {

@@ -6,6 +6,9 @@ import (
 )
 
 func TestParameterService(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	tf := ResourceParameter{
 		Name: "undo_retention",
 	}
@@ -18,6 +21,9 @@ func TestParameterService(t *testing.T) {
 }
 
 func TestSetParameter(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	tf := ResourceParameter{
 		Name:  "undo_retention",
 		Value: "400",
@@ -31,6 +37,9 @@ func TestSetParameter(t *testing.T) {
 }
 
 func TestResetParameter(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
 	requiredVersion, _ := version.NewVersion("12.2")
 	if c.DBVersion.GreaterThan(requiredVersion) {
 		tf := ResourceParameter{
@@ -49,6 +58,8 @@ func TestResetParameter(t *testing.T) {
 }
 
 func TestParameterScopeSpfile(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
 
 	tf := ResourceParameter{
 		Name:  "undo_retention",
