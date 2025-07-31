@@ -68,6 +68,11 @@ For more detailed usage and examples, please refer to the GoDoc documentation fo
 
 Contributions are welcome! Please feel free to open issues or submit pull requests.
 
+## Inspiration & Key Advantages
+
+> Note: This module is inspired by [dbgeek/terraform-oracle-rdbms-helper](https://github.com/dbgeek/terraform-oracle-rdbms-helper) and builds upon its concepts.
+One of the key benefits of tf-oracle-helper is that it eliminates the need for Oracle Instant Client dynamic libraries, making deployment simpler and reducing external dependencies.
+
 ## License
 
 This project is licensed under the MIT License.
