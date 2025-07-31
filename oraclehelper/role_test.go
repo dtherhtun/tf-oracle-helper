@@ -29,3 +29,31 @@ func TestRoleService(t *testing.T) {
 	c.RoleService.DropRole(dbRole)
 
 }
+
+func TestModifyRole(t *testing.T) {
+	c, cleanup := setupTestClient(t)
+	defer cleanup()
+
+	// This test can not be run against an container db
+	if c.ConName == "CDB$ROOT" {
+		return
+	}
+	dbRole := ResourceRole{
+		Role: "TESTMODIFYROLE",
+	}
+
+	err := c.RoleService.CreateRole(dbRole)
+	if err != nil {
+		t.Fatalf("failed to create role: %v", err)
+	}
+
+	err = c.RoleService.ModifyRole(dbRole)
+	if err != nil {
+		t.Errorf("ModifyRole failed with error: %v", err)
+	}
+
+	err = c.RoleService.DropRole(dbRole)
+	if err != nil {
+		t.Fatalf("failed to drop role: %v", err)
+	}
+}

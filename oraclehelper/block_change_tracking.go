@@ -16,7 +16,7 @@ FROM v$block_change_tracking bct
 )
 
 type (
-	//ResourceBlockChangeTracking ...
+	// ResourceBlockChangeTracking represents the block change tracking configuration.
 	ResourceBlockChangeTracking struct {
 		Status   string
 		FileName string
@@ -26,6 +26,7 @@ type (
 	}
 )
 
+// DisableBlockChangeTracking disables block change tracking for the database.
 func (b *blockChangeTrackingService) DisableBlockChangeTracking() error {
 	log.Printf("[DEBUG] DisableBlockChangeTracking\n")
 	sqlCommand := fmt.Sprintf("ALTER DATABASE DISABLE BLOCK CHANGE TRACKING")
@@ -37,6 +38,7 @@ func (b *blockChangeTrackingService) DisableBlockChangeTracking() error {
 	return nil
 }
 
+// EnableBlockChangeTracking enables block change tracking for the database.
 func (b *blockChangeTrackingService) EnableBlockChangeTracking(tf ResourceBlockChangeTracking) error {
 	log.Printf("[DEBUG] EnableBlockChangeTracking with filename: %s\n", tf.FileName)
 	sqlCommand := fmt.Sprintf("ALTER DATABASE ENABLE BLOCK CHANGE TRACKING USING FILE '%s'", tf.FileName)
@@ -48,6 +50,7 @@ func (b *blockChangeTrackingService) EnableBlockChangeTracking(tf ResourceBlockC
 	return nil
 }
 
+// ReadBlockChangeTracking reads the current block change tracking status and filename.
 func (b *blockChangeTrackingService) ReadBlockChangeTracking() (*ResourceBlockChangeTracking, error) {
 	log.Printf("[DEBUG] ReadBlockChangeTracking\n")
 	var fileName sql.NullString
@@ -59,7 +62,8 @@ func (b *blockChangeTrackingService) ReadBlockChangeTracking() (*ResourceBlockCh
 		&fileName,
 	)
 	if err != nil {
-		return nil, err
+		return nil,
+			err
 	}
 	resourceBlockChangeTracking.Status = status
 	if fileName.Valid {

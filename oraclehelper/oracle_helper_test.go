@@ -4,8 +4,6 @@ import (
 	"testing"
 )
 
-
-
 func TestDBConnection(t *testing.T) {
 	c, cleanup := setupTestClient(t)
 	defer cleanup()

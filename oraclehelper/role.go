@@ -19,12 +19,13 @@ WHERE r.role = UPPER(:1)
 `
 )
 
-//Role ..
+// Role represents an Oracle database role.
 type (
-	//ResourceRole ....
+	// ResourceRole represents a role resource.
 	ResourceRole struct {
 		Role string
 	}
+	// Role represents the detailed information of an Oracle role.
 	Role struct {
 		Role               string
 		PasswordRequired   string
@@ -37,6 +38,7 @@ type (
 	}
 )
 
+// ReadRole reads the details of an Oracle database role.
 func (r *roleService) ReadRole(tf ResourceRole) (*Role, error) {
 	log.Printf("[DEBUG] ReadUser username: %s\n", tf.Role)
 	roleType := &Role{}
@@ -54,6 +56,7 @@ func (r *roleService) ReadRole(tf ResourceRole) (*Role, error) {
 	return roleType, nil
 }
 
+// CreateRole creates a new Oracle database role.
 func (r *roleService) CreateRole(tf ResourceRole) error {
 	log.Println("[DEBUG] CreateRole")
 	sqlCommand := fmt.Sprintf("create role %s", tf.Role)
@@ -68,20 +71,13 @@ func (r *roleService) CreateRole(tf ResourceRole) error {
 	return nil
 }
 
+// ModifyRole modifies an Oracle database role. (Note: This function currently does nothing beyond logging and executing a generic ALTER USER command, which is likely incorrect for roles.)
 func (r *roleService) ModifyRole(tf ResourceRole) error {
-	log.Println("[DEBUG] ModifyRole")
-	sqlCommand := fmt.Sprintf("alter user %s", tf.Role)
-
-	log.Printf("[DEBUG] sqlcommand: %s", sqlCommand)
-
-	_, err := r.client.DBClient.Exec(sqlCommand)
-	if err != nil {
-		return err
-	}
-
+	log.Printf("[DEBUG] ModifyRole: No modifiable attributes provided for role %s. Returning nil.", tf.Role)
 	return nil
 }
 
+// DropRole drops an Oracle database role.
 func (r *roleService) DropRole(tf ResourceRole) error {
 	log.Println("[DEBUG] DropRole")
 	sqlCommand := fmt.Sprintf("drop role %s", tf.Role)

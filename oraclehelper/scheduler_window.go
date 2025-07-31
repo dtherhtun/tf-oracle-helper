@@ -54,7 +54,7 @@ END;
 )
 
 type (
-	//ResourceSchedulerWindow ....
+	// ResourceSchedulerWindow represents an Oracle scheduler window.
 	ResourceSchedulerWindow struct {
 		Owner          string
 		WindowName     string
@@ -72,6 +72,7 @@ type (
 	}
 )
 
+// ReadSchedulerWindow reads the details of an Oracle scheduler window.
 func (s *schedulerWindowService) ReadSchedulerWindow(tf ResourceSchedulerWindow) (*ResourceSchedulerWindow, error) {
 	log.Printf("[DEBUG] ReadSchedulerWindow windowname: %s\n", tf.WindowName)
 	resourceSchedulerWindow := &ResourceSchedulerWindow{}
@@ -96,6 +97,7 @@ func (s *schedulerWindowService) ReadSchedulerWindow(tf ResourceSchedulerWindow)
 	return resourceSchedulerWindow, nil
 }
 
+// CreateSchedulerWindow creates a new Oracle scheduler window.
 func (s *schedulerWindowService) CreateSchedulerWindow(tf ResourceSchedulerWindow) error {
 	sqlCommand := fmt.Sprintf("BEGIN")
 	sqlCommand += fmt.Sprintf(" DBMS_SCHEDULER.CREATE_WINDOW(")
@@ -133,6 +135,7 @@ func (s *schedulerWindowService) CreateSchedulerWindow(tf ResourceSchedulerWindo
 	return nil
 }
 
+// DropSchedulerWindow drops an Oracle scheduler window.
 func (s *schedulerWindowService) DropSchedulerWindow(tf ResourceSchedulerWindow) error {
 	_, err := s.client.DBClient.Exec(execDropWindow, tf.WindowName)
 	if err != nil {
@@ -142,6 +145,7 @@ func (s *schedulerWindowService) DropSchedulerWindow(tf ResourceSchedulerWindow)
 	return nil
 }
 
+// ModifySchedulerWindow modifies an Oracle scheduler window.
 func (s *schedulerWindowService) ModifySchedulerWindow(tf ResourceSchedulerWindow) error {
 	name := fmt.Sprintf("%s.%s", tf.Owner, tf.WindowName)
 	log.Printf("[DEBUG] ModifySchedulerWindow name: %s\n", name)

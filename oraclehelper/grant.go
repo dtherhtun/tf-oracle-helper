@@ -71,24 +71,24 @@ WHERE rp.grantee = UPPER(:1)
 )
 
 type (
-	//ResourceGrantObjectPrivilege ...
+	// ResourceGrantObjectPrivilege represents an object privilege grant.
 	ResourceGrantObjectPrivilege struct {
 		Grantee    string
 		Privilege  []string
 		Owner      string
 		ObjectName string
 	}
-	//ResourceGrantSystemPrivilege ..
+	// ResourceGrantSystemPrivilege represents a system privilege grant.
 	ResourceGrantSystemPrivilege struct {
 		Grantee   string
 		Privilege string
 	}
-	//ResourceGrantRolePrivilege ..
+	// ResourceGrantRolePrivilege represents a role privilege grant.
 	ResourceGrantRolePrivilege struct {
 		Grantee string
 		Role    string
 	}
-	//GrantTable ...
+	// GrantTable represents a row from dba_tab_privs.
 	GrantTable struct {
 		Grantee   string
 		Owner     string
@@ -101,14 +101,14 @@ type (
 		Type      string
 		Inherited string
 	}
-	//GrantObjectPrivs ...
+	// GrantObjectPrivs represents object privileges granted to a user.
 	GrantObjectPrivs struct {
 		Grantee    string
 		Owner      string
 		ObjectName string
 		Privileges []string
 	}
-	//GrantSysPrivs ..
+	// GrantSysPrivs represents system privileges granted to a user.
 	GrantSysPrivs struct {
 		Grantee     string
 		Privilege   string
@@ -116,7 +116,7 @@ type (
 		Common      string
 		Inherited   string
 	}
-	//GrantRolePrivs ...
+	// GrantRolePrivs represents roles granted to a user.
 	GrantRolePrivs struct {
 		Grantee        string
 		GrantedRole    string
@@ -131,6 +131,7 @@ type (
 	}
 )
 
+// ReadGrantObjectPrivilege reads object privileges granted to a user.
 func (tp *grantService) ReadGrantObjectPrivilege(tf ResourceGrantObjectPrivilege) (GrantObjectPrivs, error) {
 	log.Printf("[DEBUG] ReadGrantTab grantee: %s\n", tf.Grantee)
 	var privileges []string

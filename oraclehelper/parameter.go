@@ -28,15 +28,16 @@ WHERE name = :1
 `
 )
 
+// ResourceParameter represents an Oracle database parameter.
 type (
-
-	//ResourceParameter ..
 	ResourceParameter struct {
 		Name    string
 		Value   string
 		Comment string
 		Scope   string
 	}
+
+	// parameter represents the internal structure of an Oracle database parameter.
 	parameter struct {
 		Num                  sql.NullString
 		Name                 string
@@ -57,6 +58,7 @@ type (
 	}
 )
 
+// Read retrieves an Oracle database parameter.
 func (p *parameterService) Read(tf ResourceParameter) (*parameter, error) {
 	log.Printf("[DEBUG] Read name: %s\n", tf.Name)
 	param := &parameter{}
@@ -82,6 +84,7 @@ func (p *parameterService) Read(tf ResourceParameter) (*parameter, error) {
 	return param, nil
 }
 
+// SetParameter sets an Oracle database parameter.
 func (p *parameterService) SetParameter(tf ResourceParameter) error {
 	log.Printf("[DEBUG] SetParameter value: %s \n", tf.Value)
 	sqlCommand := fmt.Sprintf("alter system set %s = %s", tf.Name, tf.Value)
@@ -104,6 +107,7 @@ func (p *parameterService) SetParameter(tf ResourceParameter) error {
 	return nil
 }
 
+// ResetParameter resets an Oracle database parameter to its default value.
 func (p *parameterService) ResetParameter(tf ResourceParameter) error {
 	log.Println("[DEBUG] ResetParameter")
 	sqlCommand := fmt.Sprintf("alter system reset %s scope=both", tf.Name)

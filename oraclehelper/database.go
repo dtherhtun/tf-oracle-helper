@@ -16,6 +16,7 @@ FROM v$database
 )
 
 type (
+	// ResourceDatabase represents the Oracle database configuration.
 	ResourceDatabase struct {
 		Name         string
 		ForceLogging string
@@ -26,6 +27,7 @@ type (
 	}
 )
 
+// ReadDatabase reads the current database configuration.
 func (d *databaseService) ReadDatabase() (*ResourceDatabase, error) {
 	log.Printf("[DEBUG] ReadDatabase\n")
 	ResourceDatabase := &ResourceDatabase{}
@@ -41,6 +43,7 @@ func (d *databaseService) ReadDatabase() (*ResourceDatabase, error) {
 	return ResourceDatabase, nil
 }
 
+// ModifyDatabase modifies the database configuration.
 func (d *databaseService) ModifyDatabase(tf ResourceDatabase) error {
 
 	if tf.ForceLogging != "" {
@@ -52,6 +55,7 @@ func (d *databaseService) ModifyDatabase(tf ResourceDatabase) error {
 	return nil
 }
 
+// ModifyLoggingDatabase modifies the database logging mode.
 func (d *databaseService) ModifyLoggingDatabase(tf ResourceDatabase) error {
 	sqlCommand := "alter database"
 
@@ -69,6 +73,7 @@ func (d *databaseService) ModifyLoggingDatabase(tf ResourceDatabase) error {
 	return nil
 }
 
+// ModifyFlashbackDatabase modifies the database flashback mode.
 func (d *databaseService) ModifyFlashbackDatabase(tf ResourceDatabase) error {
 
 	sqlCommand := fmt.Sprintf("alter database flashback %s", tf.FlashBackOn)

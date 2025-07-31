@@ -15,12 +15,13 @@ WHERE profile = UPPER(:1)
 )
 
 type (
-	//ResourceProfile ...
+	// ResourceProfile represents an Oracle database profile.
 	ResourceProfile struct {
 		Profile      string
 		ResourceName string
 		Limit        string
 	}
+	// profile represents the internal structure of an Oracle profile.
 	profile struct {
 		Profile      string
 		ResourceName string
@@ -35,6 +36,7 @@ type (
 	}
 )
 
+// CreateProfile creates an Oracle database profile.
 func (p *profileService) CreateProfile(tf ResourceProfile) error {
 	log.Printf("[DEBUG] CreateProfile profile: %s\n", tf.Profile)
 	sqlCommand := fmt.Sprintf("create profile %s limit PASSWORD_GRACE_TIME default", tf.Profile)
@@ -48,6 +50,7 @@ func (p *profileService) CreateProfile(tf ResourceProfile) error {
 	return nil
 }
 
+// ReadProfile reads an Oracle database profile.
 func (p *profileService) ReadProfile(tf ResourceProfile) (map[string]string, error) {
 	log.Printf("[DEBUG] Read name: %s\n", tf.Profile)
 	profileparms := make(map[string]string)
@@ -107,6 +110,7 @@ func (p *profileService) ReadProfile(tf ResourceProfile) (map[string]string, err
 	return profileparms, nil
 }
 
+// UpdateProfile updates an Oracle database profile.
 func (p *profileService) UpdateProfile(tf ResourceProfile) error {
 	log.Printf("[DEBUG] UpdateProfile resource: %s, value: %s \n", tf.ResourceName, tf.Limit)
 	sqlCommand := fmt.Sprintf("alter profile %s limit %s %s", tf.Profile, tf.ResourceName, tf.Limit)
@@ -121,6 +125,7 @@ func (p *profileService) UpdateProfile(tf ResourceProfile) error {
 	return nil
 }
 
+// ResetProfileResourceLimite resets a resource limit for an Oracle database profile.
 func (p *profileService) ResetProfileResourceLimite(tf ResourceProfile) error {
 	log.Printf("[DEBUG] ResetProfileResourceLimite profile: %s, resource: %s", tf.Profile, tf.ResourceName)
 
@@ -133,6 +138,7 @@ func (p *profileService) ResetProfileResourceLimite(tf ResourceProfile) error {
 	return nil
 }
 
+// DeleteProfile deletes an Oracle database profile.
 func (p *profileService) DeleteProfile(tf ResourceProfile) error {
 	log.Println("[DEBUG] DeleteProfile")
 	sqlCommand := fmt.Sprintf("drop profile %s", tf.Profile)

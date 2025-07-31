@@ -26,7 +26,7 @@ func TestSchedulerWindowService(t *testing.T) {
 		t.Error("Failed to read window")
 	}
 	if windows.WindowName != tstWindow.WindowName {
-				t.Error("window name not equal")
+		t.Error("window name not equal")
 
 	}
 	c.SchedulerWindowService.ModifySchedulerWindow(

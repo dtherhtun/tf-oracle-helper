@@ -7,8 +7,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
 )
 
-
-
 func TestAuditRead(t *testing.T) {
 	c, cleanup := setupTestClient(t)
 	defer cleanup()
@@ -162,7 +160,7 @@ func TestAuditRemoveAudit(t *testing.T) {
 				},
 			},
 			[]AuditOption{AuditOption{
-				Option:  "ALTER SYSTEM",				Success: "BY ACCESS",
+				Option: "ALTER SYSTEM", Success: "BY ACCESS",
 				Failure: "BY ACCESS"},
 			},
 			[]AuditOption{AuditOption{

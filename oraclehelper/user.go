@@ -30,7 +30,7 @@ WHERE q.username = UPPER(:1)
 )
 
 type (
-	//ResourceUser ..
+	// ResourceUser represents an Oracle database user.
 	ResourceUser struct {
 		Username            string
 		DefaultTablespace   string
@@ -39,7 +39,7 @@ type (
 		AccountStatus       string
 		Quota               map[string]string
 	}
-	//User ..
+	// User represents the detailed information of an Oracle user.
 	User struct {
 		Username            string
 		DefaultTablespace   string
@@ -53,6 +53,7 @@ type (
 	}
 )
 
+// ReadUser reads the details of an Oracle database user.
 func (u *userService) ReadUser(tf ResourceUser) (*User, error) {
 	log.Printf("[DEBUG] ReadUser username: %s\n", tf.Username)
 	quota := make(map[string]string)
@@ -96,6 +97,7 @@ func (u *userService) ReadUser(tf ResourceUser) (*User, error) {
 	return param, nil
 }
 
+// CreateUser creates a new Oracle database user.
 func (u *userService) CreateUser(tf ResourceUser) error {
 	log.Println("[DEBUG] CreateUser")
 	password := acctest.RandStringFromCharSet(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuwxyz")
@@ -135,6 +137,7 @@ func (u *userService) CreateUser(tf ResourceUser) error {
 	return nil
 }
 
+// ModifyUser modifies an Oracle database user.
 func (u *userService) ModifyUser(tf ResourceUser) error {
 	log.Println("[DEBUG] ModifyUser")
 	sqlCommand := fmt.Sprintf("alter user %s", tf.Username)
@@ -170,6 +173,7 @@ func (u *userService) ModifyUser(tf ResourceUser) error {
 	return nil
 }
 
+// DropUser drops an Oracle database user.
 func (u *userService) DropUser(tf ResourceUser) error {
 	log.Println("[DEBUG] DeleteUser")
 	sqlCommand := fmt.Sprintf("drop user %s", tf.Username)

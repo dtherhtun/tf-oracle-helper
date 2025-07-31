@@ -45,12 +45,14 @@ END;
 )
 
 type (
+	// ResourceStats represents statistics preferences for a database object.
 	ResourceStats struct {
 		Pname   string
 		OwnName string
 		TaBName string
 		Pvalu   string
 	}
+	// Stats represents the detailed statistics preferences.
 	Stats struct {
 		Pname   string
 		OwnName string
@@ -62,6 +64,7 @@ type (
 	}
 )
 
+// ReadGlobalPre reads a global statistics preference.
 func (r *statsService) ReadGlobalPre(tf ResourceStats) (*Stats, error) {
 	log.Printf("[DEBUG] ReadGlobalPre pname: %s\n", tf.Pname)
 	statsType := &Stats{}
@@ -73,6 +76,7 @@ func (r *statsService) ReadGlobalPre(tf ResourceStats) (*Stats, error) {
 	return statsType, nil
 }
 
+// SetGlobalPre sets a global statistics preference.
 func (r *statsService) SetGlobalPre(tf ResourceStats) error {
 	log.Printf("[DEBUG] SetGlobalPre pname: %s, pvalu: %s\n", tf.Pname, tf.Pvalu)
 
@@ -83,6 +87,7 @@ func (r *statsService) SetGlobalPre(tf ResourceStats) error {
 	return nil
 }
 
+// SetSchemaPre sets a schema-level statistics preference.
 func (r *statsService) SetSchemaPre(tf ResourceStats) error {
 	log.Printf("[DEBUG] SetSchemaPre pname: %sowner: %s pvalue: %s\n", tf.Pname, tf.OwnName, tf.Pvalu)
 
@@ -93,6 +98,7 @@ func (r *statsService) SetSchemaPre(tf ResourceStats) error {
 	return nil
 }
 
+// ReadTabPref reads a table-level statistics preference.
 func (r *statsService) ReadTabPref(tf ResourceStats) (*Stats, error) {
 	log.Printf("[DEBUG] ReadTabPref pname: %s owner: %s table: %s\n", tf.Pname, tf.OwnName, tf.TaBName)
 	statsType := &Stats{}
@@ -103,6 +109,8 @@ func (r *statsService) ReadTabPref(tf ResourceStats) (*Stats, error) {
 	}
 	return statsType, nil
 }
+
+// SetTabPre sets a table-level statistics preference.
 func (r *statsService) SetTabPre(tf ResourceStats) error {
 	log.Printf("[DEBUG] SetTabPre pname: %s owner: %s table: %s\n", tf.Pname, tf.OwnName, tf.TaBName)
 

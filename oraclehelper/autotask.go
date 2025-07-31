@@ -31,7 +31,7 @@ END;
 )
 
 type (
-	//ResourceAutoTask ...
+	// ResourceAutoTask represents an Oracle autotask client.
 	ResourceAutoTask struct {
 		ClientName string
 		Status     string
@@ -41,6 +41,7 @@ type (
 	}
 )
 
+// DisableAutoTask disables an Oracle autotask client.
 func (a *autoTaskService) DisableAutoTask(tf ResourceAutoTask) error {
 	log.Printf("[DEBUG] DisableAutoTask clientName: %s\n", tf.ClientName)
 	_, err := a.client.DBClient.Exec(execDisableAutoTask, tf.ClientName)
@@ -50,6 +51,7 @@ func (a *autoTaskService) DisableAutoTask(tf ResourceAutoTask) error {
 	return nil
 }
 
+// EnableAutoTask enables an Oracle autotask client.
 func (a *autoTaskService) EnableAutoTask(tf ResourceAutoTask) error {
 	log.Printf("[DEBUG] EnableAutoTask clientName: %s\n", tf.ClientName)
 	_, err := a.client.DBClient.Exec(execEnableAutoTask, tf.ClientName)
@@ -58,6 +60,8 @@ func (a *autoTaskService) EnableAutoTask(tf ResourceAutoTask) error {
 	}
 	return nil
 }
+
+// ReadAutoTask reads the status of an Oracle autotask client.
 func (a *autoTaskService) ReadAutoTask(tf ResourceAutoTask) (*ResourceAutoTask, error) {
 	log.Printf("[DEBUG] ReadAutoTask clientName: %s\n", tf.ClientName)
 	resourceAutoTask := &ResourceAutoTask{}
@@ -68,7 +72,8 @@ func (a *autoTaskService) ReadAutoTask(tf ResourceAutoTask) (*ResourceAutoTask, 
 		&resourceAutoTask.Status,
 	)
 	if err != nil {
-		return nil, err
+		return nil,
+			err
 	}
 	return resourceAutoTask, nil
 }

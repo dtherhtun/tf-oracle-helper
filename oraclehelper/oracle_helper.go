@@ -10,6 +10,7 @@ import (
 	"github.com/sijms/go-ora/v2"
 )
 
+// Cfg represents the configuration for connecting to an Oracle database.
 type (
 	Cfg struct {
 		Username  string
@@ -20,6 +21,7 @@ type (
 		SysDBA    bool
 	}
 
+	// Client represents a client for interacting with an Oracle database.
 	Client struct {
 		DBClient                   *sql.DB
 		DBVersion                  *version.Version
@@ -39,6 +41,7 @@ type (
 	}
 )
 
+// Close closes the underlying database connection.
 func (c *Client) Close() error {
 	return c.DBClient.Close()
 }
@@ -61,6 +64,7 @@ FROM   dual
 `
 )
 
+// NewClient creates a new Oracle client with the given configuration.
 func NewClient(cfg Cfg) (*Client, error) {
 	port, err := strconv.Atoi(cfg.DbPort)
 	if err != nil {
@@ -68,7 +72,7 @@ func NewClient(cfg Cfg) (*Client, error) {
 	}
 	urlOptions := make(map[string]string)
 	if cfg.SysDBA {
-		urlOptions["auth as"] = "sysdba"
+		urlOptions["AUTH TYPE"] = "sysdba"
 	}
 	connStr := go_ora.BuildUrl(cfg.DbHost, port, cfg.DbService, cfg.Username, cfg.Password, urlOptions)
 	db, err := sql.Open("oracle", connStr)

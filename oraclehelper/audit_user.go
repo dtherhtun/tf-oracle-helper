@@ -31,13 +31,13 @@ type (
 	auditUserService struct {
 		client *Client
 	}
-	//AuditOption ..
+	// AuditOption represents an audit option for a user.
 	AuditOption struct {
 		Option  string
 		Success string
 		Failure string
 	}
-	//ResourceAuditUser ..
+	// ResourceAuditUser represents the audit configuration for a user.
 	ResourceAuditUser struct {
 		UserName    string
 		AuditOption []AuditOption
@@ -50,6 +50,7 @@ const (
 	auditNotSet   = "NOT SET"
 )
 
+// Audit sets audit options for a user.
 func (a *auditUserService) Audit(r ResourceAuditUser) error {
 	log.Println("[DEBUG] Audit")
 
@@ -71,6 +72,7 @@ func (a *auditUserService) Audit(r ResourceAuditUser) error {
 	return nil
 }
 
+// NoAudit removes audit options for a user.
 func (a *auditUserService) NoAudit(r ResourceAuditUser) error {
 
 	log.Println("[DEBUG] Audit")
@@ -86,6 +88,7 @@ func (a *auditUserService) NoAudit(r ResourceAuditUser) error {
 	return nil
 }
 
+// ReadAudit reads the audit options for a user.
 func (a *auditUserService) ReadAudit(r ResourceAuditUser) (ResourceAuditUser, error) {
 	log.Printf("[DEBUG] Running ReadAudit function")
 	var auditOption []AuditOption
